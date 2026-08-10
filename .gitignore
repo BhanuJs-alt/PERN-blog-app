@@ -1,0 +1,11 @@
+# Ignore Node modules for both client and server
+client/node_modules
+server/node_modules
+
+# Ignore environment variables (NEVER push these)
+client/.env
+server/.env
+
+# Ignore build artifacts
+client/build
+client/dist
