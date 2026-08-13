@@ -19,3 +19,70 @@ export const createPost = async (data: CreatePostInput) => {
     authorId,
   });
 };
+
+export const getAllPosts = () => {
+  return postRepository.findAllPosts();
+};
+
+export const getPostById = async (id: string) => {
+  const post = await postRepository.findPostById(id);
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  return post;
+};
+
+export const updatePost = async (
+  postId: string,
+  userId: string,
+  data: {
+    title?: string;
+    content?: string;
+    imageUrl?: string;
+  },
+) => {
+  const post = await postRepository.findPostOwner(postId);
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  if (post.authorId !== userId) {
+    throw new Error("You are not allowed to edit this post");
+  }
+
+  if (data.title !== undefined && !data.title.trim()) {
+    throw new Error("Title cannot be empty");
+  }
+
+  if (data.content !== undefined && !data.content.trim()) {
+    throw new Error("Content cannot be empty");
+  }
+
+  return postRepository.updatePost(postId, {
+    ...(data.title !== undefined && {
+      title: data.title.trim(),
+    }),
+    ...(data.content !== undefined && {
+      content: data.content.trim(),
+    }),
+    ...(data.imageUrl !== undefined && {
+      imageUrl: data.imageUrl,
+    }),
+  });
+};
+export const deletePost = async (postId: string, userId: string) => {
+  const post = await postRepository.findPostOwner(postId);
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  if (post.authorId !== userId) {
+    throw new Error("You are not allowed to delete this post");
+  }
+
+  return postRepository.deletePost(postId);
+};
