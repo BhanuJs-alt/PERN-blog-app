@@ -1,6 +1,6 @@
 export interface CreatePostInput {
   title: string;
   content: string;
-  imageUrl?: string;
+  image: Express.Multer.File;
   authorId: string;
 }

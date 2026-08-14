@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const { title, content, imageUrl } = req.body;
+    const { title, content } = req.body;
     const authorId = req.user?.id;
 
     if (!authorId) {
@@ -14,7 +14,7 @@ export const createPost = async (req: Request, res: Response) => {
     const post = await postService.createPost({
       title: title.trim(),
       content: content.trim(),
-      imageUrl,
+      image: req.file,
       authorId,
     });
     res.status(201).json(post);

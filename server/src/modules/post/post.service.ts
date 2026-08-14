@@ -1,8 +1,9 @@
 import * as postRepository from "./post.repository.js";
 import { CreatePostInput } from "../../types/post.types.ts";
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary.ts";
 
 export const createPost = async (data: CreatePostInput) => {
-  const { title, content, imageUrl, authorId } = data;
+  const { title, content, image, authorId } = data;
 
   if (!title.trim()) {
     throw new Error("Title is required");
@@ -10,6 +11,16 @@ export const createPost = async (data: CreatePostInput) => {
 
   if (!content.trim()) {
     throw new Error("Content is required");
+  }
+  let imageUrl: string | undefined;
+
+  if (image) {
+    const uploadedImage = await uploadToCloudinary(
+      image.buffer,
+      "blog-app/posts",
+    );
+
+    imageUrl = uploadedImage.secure_url;
   }
 
   return postRepository.createPost({
