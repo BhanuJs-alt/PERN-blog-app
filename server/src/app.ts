@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./modules/auth/auth.routes.ts";
 import postRoutes from "./modules/post/post.routes.ts";
 import likeRoutes from "./modules/like/like.routes.ts";
+import commentRoutes from "./modules/comment/comment.routes.ts";
 
 dotenv.config();
 const app = express();
@@ -19,5 +20,7 @@ app.get("/", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api", likeRoutes);
+app.use("/api/post", likeRoutes);
+app.use("/api/post",commentRoutes);
+
 export default app;

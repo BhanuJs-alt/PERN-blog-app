@@ -1,12 +1,9 @@
 import * as likeRepository from "./like.repository.js";
-import { prisma } from "../../lib/db.ts";
+import { prisma } from "../../config/db.ts";
+import {findPostById} from "../post/post.repository.ts";
 
 export const likePost = async (userId: string, postId: string) => {
-  const post = await prisma.post.findUnique({
-    where: {
-      id: postId,
-    },
-  });
+  const post = await findPostById(postId);
 
   if (!post) {
     throw new Error("Post not found");

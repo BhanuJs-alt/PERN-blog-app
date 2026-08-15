@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/db.ts";
+import { prisma } from "../../config/db.ts";
 import { CreatePostInput } from "../../types/post.types.ts";
 
 export const createPost = async (data: CreatePostInput) => {

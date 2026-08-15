@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/db.ts";
+import { prisma } from "../../config/db.ts";
 
 export const findLike = (userId: string, postId: string) => {
   return prisma.like.findUnique({
