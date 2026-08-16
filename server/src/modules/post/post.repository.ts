@@ -16,6 +16,12 @@ export const findAllPosts = () => {
           avatar: true,
         },
       },
+     _count: {
+       select: {
+         likes: true,
+         comments: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
@@ -36,6 +42,12 @@ export const findPostById = (id: string) => {
           avatar: true,
         },
       },
+       _count: {
+        select: {
+           likes: true,
+           comments: true,
+        },
+       },
     },
   });
 };
