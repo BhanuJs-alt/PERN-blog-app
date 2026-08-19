@@ -45,3 +45,20 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 };
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await authService.getCurrentUser(req.user.id);
+
+    return res.status(200).json({
+      user,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};

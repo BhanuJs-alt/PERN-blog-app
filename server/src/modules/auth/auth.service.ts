@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
-import { createUser, findUserByEmail } from "./auth.repository.ts";
+import * as authRepository from "./auth.repository.ts";
 import { RegisterData, LoginData } from "../../types/auth.types.ts";
 import { createToken } from "../../utils/jwt.ts";
 
 export const register = async (data: RegisterData) => {
-  const existingUser = await findUserByEmail(data.email);
+  const existingUser = await authRepository.findUserByEmail(data.email);
 
   if (existingUser) {
     throw new Error("Email already exist");
@@ -14,7 +14,7 @@ export const register = async (data: RegisterData) => {
     Number(process.env.BCRYPT_SALT_ROUNDS),
   );
 
-  const newUser = await createUser({
+  const newUser = await authRepository.createUser({
     name: data.name,
     email: data.email,
     password: hashedPassword,
@@ -30,7 +30,7 @@ export const register = async (data: RegisterData) => {
   };
 };
 export const login = async (data: LoginData) => {
-  const user = await findUserByEmail(data.email);
+  const user = await authRepository.findUserByEmail(data.email);
   if (!user) {
     throw new Error("User not found");
   }
@@ -47,4 +47,13 @@ export const login = async (data: LoginData) => {
     },
     token,
   };
+};
+export const getCurrentUser = async (userId: string) => {
+  const user = await authRepository.findUserById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
 };
