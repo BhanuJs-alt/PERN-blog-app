@@ -1,6 +1,7 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 interface LoginForm {
   email: string;
@@ -14,6 +15,7 @@ function Login() {
   });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const { refreshUser } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -24,13 +26,14 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
       setError("");
       await api.post("/auth/login", form);
+      await refreshUser();
       navigate("/");
     } catch (error: any) {
       setError(error.response?.message || "Invalid email or password");
@@ -64,6 +67,7 @@ function Login() {
         />
 
         <button
+          onClick={handleSubmit}
           type="submit"
           disabled={loading}
           className="w-full bg-black text-white p-3 rounded"

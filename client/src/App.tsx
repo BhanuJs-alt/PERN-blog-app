@@ -1,33 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import useAuth from "./hooks/useAuth";
+import { Home } from "./pages/Home";
+import { Explore } from "./pages/Explore";
+import { CreatePost } from "./pages/CreatePost";
+import { Profile } from "./pages/Profile";
+import { Settings } from "./pages/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MainLayout from "./layouts/MainLayout";
 
-const Home = () => {
-  const { user } = useAuth();
-
-  return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold">Blog Home</h1>
-
-      <p className="mt-2">Welcome, {user?.name}</p>
-    </div>
-  );
-};
-
-const Profile = () => {
-  const { user } = useAuth();
-
-  return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold">Profile</h1>
-      <p>{user?.name}</p>
-      <p>{user?.id}</p>
-      <p>{user?.email}</p>
-    </div>
-  );
-};
 function App() {
   return (
     <BrowserRouter>
@@ -35,8 +16,16 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/explore" element={<Explore />} />
+
+            <Route path="/create-post" element={<CreatePost />} />
+
+            <Route path="/profile" element={<Profile />} />
+
+            <Route path="/settings" element={<Settings />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

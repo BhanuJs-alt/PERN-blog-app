@@ -1,6 +1,7 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import useAuth from "../hooks/useAuth";
 
 interface RegisterForm {
   name: string;
@@ -19,6 +20,7 @@ function Register() {
 
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const { refreshUser } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -27,7 +29,7 @@ function Register() {
     });
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -35,7 +37,7 @@ function Register() {
       setError("");
 
       await api.post("/auth/register", form);
-
+      await refreshUser();
       navigate("/");
     } catch (error: any) {
       setError("Registration failed");
@@ -79,6 +81,7 @@ function Register() {
         />
 
         <button
+          onClick={handleSubmit}
           type="submit"
           disabled={loading}
           className="w-full bg-black text-white p-3 rounded"

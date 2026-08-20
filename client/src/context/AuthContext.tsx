@@ -14,6 +14,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
+  refreshUser: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -29,17 +30,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchCurrentUser = async () => {
+  const refreshUser = async () => {
     try {
       const response = await api.get("/auth/user");
-      console.log("Current user:", response.data.user);
 
       setUser(response.data.user);
-    } catch (error: InstanceType<typeof Error> | string | unknown) {
-      console.error("Failed to fetch current user:", error);
+    } catch (error) {
       setUser(null);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -53,7 +50,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    fetchCurrentUser();
+    const checkAuth = async () => {
+      await refreshUser();
+      setLoading(false);
+    };
+
+    checkAuth();
   }, []);
 
   return (
@@ -62,6 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         user,
         loading,
         isAuthenticated: !!user,
+        refreshUser,
         logout,
       }}
     >
