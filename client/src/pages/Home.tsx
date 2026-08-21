@@ -1,13 +1,45 @@
+import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
+import api from "../services/api";
+import type { Post } from "../types/post";
+import PostCard from "../components/PostCard";
 
 export const Home = () => {
   const { user } = useAuth();
 
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await api.get("/posts");
+
+        setPosts(response.data.posts);
+
+        console.log("Fetched posts:", response.data.posts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
-    <div className="p-10">
+    <div>
       <h1 className="text-3xl font-bold">Blog Home</h1>
 
-      <p className="mt-2">Welcome, {user?.name}</p>
+      <p className="mt-2 text-gray-500">Welcome, {user?.name}</p>
+
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold">Latest Posts</h2>
+
+        <div className="mt-6 space-y-6">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
