@@ -6,6 +6,7 @@ import { Explore } from "./pages/Explore";
 import { CreatePost } from "./pages/CreatePost";
 import { Profile } from "./pages/Profile";
 import { Settings } from "./pages/Settings";
+import PostDetails from "./pages/PostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/settings" element={<Settings />} />
+            <Route path="/posts/:id" element={<PostDetails />} />
           </Route>
         </Route>
       </Routes>

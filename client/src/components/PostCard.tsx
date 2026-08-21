@@ -1,13 +1,20 @@
 import { Heart, MessageCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Post } from "../types/post";
 
 interface PostCardProps {
   post: Post;
 }
-
 const PostCard = ({ post }: PostCardProps) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/posts/${post.id}`);
+  };
   return (
-    <article className="group flex min-h-[220px] gap-6 border-b border-gray-200 py-8">
+    <article
+      onClick={handleClick}
+      className="group flex min-h-[220px] gap-6 border-b border-gray-200 py-8"
+    >
       {/* Left - Post Content */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Author + Date */}
