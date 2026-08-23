@@ -10,6 +10,8 @@ const PostDetails = () => {
   const navigate = useNavigate();
 
   const [post, setPost] = useState<Post | null>(null);
+  const [liked, setLiked] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -25,9 +27,13 @@ const PostDetails = () => {
         setLoading(true);
         setError("");
 
-        const response = await api.get(`/posts/${id}`);
+        const [postResponse, likeResponse] = await Promise.all([
+          api.get(`/posts/${id}`),
+          api.get(`/likes/status/${id}`),
+        ]);
 
-        setPost(response.data.post);
+        setPost(postResponse.data.post);
+        setLiked(likeResponse.data.liked);
       } catch (error) {
         console.error("Error fetching post:", error);
         setError("Unable to load this post.");
@@ -66,7 +72,38 @@ const PostDetails = () => {
       </div>
     );
   }
+  const handleLike = async () => {
+    if (likeLoading || !post || !id) {
+      return;
+    }
 
+    try {
+      setLikeLoading(true);
+
+      if (liked) {
+        await api.delete(`/likes/unlike/${id}`);
+      } else {
+        await api.post(`/likes/like/${id}`);
+      }
+
+      setLiked(!liked);
+      setPost((currentPost) =>
+        currentPost
+          ? {
+              ...currentPost,
+              _count: {
+                ...currentPost._count,
+                likes: currentPost._count.likes + (liked ? -1 : 1),
+              },
+            }
+          : currentPost,
+      );
+    } catch (error) {
+      console.error("Unable to update like:", error);
+    } finally {
+      setLikeLoading(false);
+    }
+  };
   return (
     <article className="mx-auto max-w-3xl py-6">
       {/* Back */}
@@ -120,8 +157,13 @@ const PostDetails = () => {
 
       {/* Engagement */}
       <div className="mt-10 flex items-center gap-6 border-t border-gray-200 pt-5 text-gray-500">
-        <button className="flex items-center gap-2 transition hover:text-red-500">
-          <Heart size={20} />
+        <button
+          onClick={handleLike}
+          disabled={likeLoading}
+          aria-label={liked ? "Unlike post" : "Like post"}
+          className={`flex items-center gap-2 transition hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 ${liked ? "text-red-500" : ""}`}
+        >
+          <Heart size={20} fill={liked ? "currentColor" : "none"} />
           <span>{post._count.likes}</span>
         </button>
 
