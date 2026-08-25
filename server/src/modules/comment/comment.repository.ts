@@ -52,7 +52,7 @@ export const getCommentsByPostId = async (postId: string) => {
       createdAt: "desc",
     },
   });
-}
+};
 
 export const deleteComment = async (commentId: string) => {
   return await prisma.comment.delete({
@@ -60,16 +60,16 @@ export const deleteComment = async (commentId: string) => {
       id: commentId,
     },
   });
-}
+};
 
 export const commentOwner = async (commentId: string) => {
   return await prisma.comment.findUnique({
     where: {
-        id: commentId
+      id: commentId,
     },
     select: {
-        id: true,
+      id: true,
       authorId: true,
-    }
-    });
-}
+    },
+  });
+};

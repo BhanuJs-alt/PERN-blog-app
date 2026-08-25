@@ -1,4 +1,4 @@
-import *as commentServices from "./comment.service.ts"
+import * as commentServices from "./comment.service.ts";
 import { Request, Response } from "express";
 
 export const createComment = async (req: Request, res: Response) => {
@@ -7,7 +7,11 @@ export const createComment = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     const { postId } = req.params;
 
-    const comment = await commentServices.createComment({ content, userId, postId });
+    const comment = await commentServices.createComment({
+      content,
+      userId,
+      postId,
+    });
     res.status(201).json(comment);
   } catch (error) {
     res.status(400).json({ error: error.message });
